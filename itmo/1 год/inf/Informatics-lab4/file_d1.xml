@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<all>
+	<day>Пятница</day>
+	<lessons>
+		<lesson1>
+			<name>Математический анализ</name>
+			<type>Лекция</type>
+			<teacher>Правдин Константин Владимирович</teacher>
+			<auditory>2407</auditory>
+			<address>Кронверкский пр., д.49, лит.А</address>
+			<start>10:00</start>
+			<end>11:30</end>
+		</lesson1>
+		<lesson2>
+			<name>Математический анализ</name>
+			<type>Практика</type>
+			<teacher>Правдин Константин Владимирович</teacher>
+			<auditory>1316</auditory>
+			<address>Кронверкский пр., д.49, лит.А</address>
+			<start>11:40</start>
+			<end>13:10</end>
+		</lesson2>
+		<lesson3>
+			<name>Английский язык A2</name>
+			<type>Практика</type>
+			<teacher>Балабанова Анна Андреевна</teacher>
+			<auditory>3211</auditory>
+			<address>ул.Ломоносова, д.9, лит. Е</address>
+			<start>15:20</start>
+			<end>16:50</end>
+		</lesson3>
+		<lesson4>
+			<name>Английский язык A2</name>
+			<type>Практика</type>
+			<teacher>Балабанова Анна Андреевна</teacher>
+			<auditory>3211</auditory>
+			<address>ул.Ломоносова, д.9, лит. Е</address>
+			<start>17:00</start>
+			<end>18:30</end>
+		</lesson4>
+	</lessons>
+</all>
