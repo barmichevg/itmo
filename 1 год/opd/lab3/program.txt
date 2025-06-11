@@ -1,0 +1,25 @@
+ORG 0x5DF
+A: WORD 0x05F3
+B: WORD 0x0200
+C: WORD 0x4000
+R: WORD 0x0200
+START:LD #0x40
+SWAB
+ASL
+ST R
+LD #0x04
+ST C
+ADD A
+ST B
+loop_start: LD -(B)
+BMI loop_addr
+CMP R
+BLT loop_addr
+ST R
+loop_addr: LOOP 0x5E1
+JUMP loop_start
+HLT
+WORD 0x25E4
+WORD 0xF000
+WORD 0x15DF
+WORD 0x75F1

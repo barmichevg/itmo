@@ -1,0 +1,33 @@
+ORG 0x000
+START:
+    CLA
+    LD X2
+    ASL
+    ST R2
+    LD X1
+    BPL IFN0
+    CALL $function
+    IFN0: ASL
+    ST R1
+    LD R2
+    ASL
+    ST R2
+    LD R1
+    BPL IFN1
+    CALL $function
+    IFN1: ASL
+    ST R1
+    HLT
+    X1: WORD 0x0001 ;число младшие 16 бит
+    X2: WORD 0x0000 ;число старшие 16 бит
+    R1: WORD 0x0000 ;результат младшие 16 бит
+    R2: WORD 0x0000 ;результат старшие 16 бит
+
+ORG 0x020
+function:
+    ST R1
+    LD R2
+    INC
+    ST R2
+    LD R1
+    RET

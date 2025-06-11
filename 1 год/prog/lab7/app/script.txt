@@ -1,0 +1,14 @@
+help
+info
+add|AlphaLab|100|200.5|50|Basic lab|3|NORMAL|Math|40
+add|BetaLab|120|180.0|70|Second lab|5|VERY_HARD|Physics|30
+update|1|UpdatedLab|110|210.2|55|Updated info|4|INSANE|Chemistry|25
+remove_by_id|2
+remove_at|0
+filter_less_than_minimal_point|60
+print_ascending
+min_by_coordinates
+shuffle
+reorder
+show
+save

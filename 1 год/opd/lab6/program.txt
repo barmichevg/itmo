@@ -1,0 +1,89 @@
+ORG 0x0 ; задаются вектора прерываний
+V0: WORD $DEFAULT, 0x180
+V1: WORD $DEFAULT, 0x180
+V2: WORD $INT2, 0x180 ; ВУ-2
+V3: WORD $INT3, 0x180 ; ВУ-3
+V4: WORD $DEFAULT, 0x180
+V5: WORD $DEFAULT, 0x180
+V6: WORD $DEFAULT, 0x180
+V7: WORD $DEFAULT, 0x180
+
+DEFAULT: IRET ; обработака прерывания по умолчанию
+
+ORG 0x010
+X: WORD 0x0000
+MIN_VAL: WORD 0xFFD3 ; -45
+MAX_VAL: WORD 0x0028 ; +40
+
+ORG 0x020
+START:
+	DI
+	CLA ; запрет прерываний для неиспользуемых устройств
+	OUT 0x1
+	OUT 0x5
+	OUT 0xB
+	OUT 0xD
+	OUT 0x11
+	OUT 0x15
+	OUT 0x19
+	OUT 0x1D
+	LD #0xA ; загрузка в аккумулятор MR (1000|0010=1010)
+	OUT 0x5 ; разрешение прерываний для ВУ-2
+	LD #0xB ; загрузка в аккумулятор MR (1000|0011=1011)
+	OUT 0x7 ; разрешение прерываний для ВУ-3
+	EI
+	JUMP $MAIN
+
+MAIN:
+	DI
+	LD $X
+	INC
+	CALL $CHECK_ODZ
+	ST $X
+	EI
+	JUMP MAIN
+
+CHECK_ODZ:
+	CMP $MIN_VAL
+	BPL CHECK_MAX
+	JUMP SET_MIN
+CHECK_MAX:
+	CMP $MAX_VAL
+	BMI RET_CHK
+SET_MIN:
+	LD $MIN_VAL
+RET_CHK: RET
+
+INT2: ; (~X & Y) | (X & ~Y)
+	DI
+	IN 0x4
+	PUSH 
+	NOT
+	PUSH
+	;HLT
+	LD X
+	NOT
+	AND &1
+	PUSH
+	LD X 
+	AND &1
+	OR &0
+	CALL $CHECK_ODZ
+	ST $X
+	POP
+	POP
+	POP
+	;HLT
+	EI
+	IRET
+
+INT3: ; 3X+7
+	DI
+	LD $X
+	ASL
+	ADD $X
+	ADD #7 
+	OUT 0x6 ; Вывод на ВУ-3
+	;HLT
+	EI
+	IRET

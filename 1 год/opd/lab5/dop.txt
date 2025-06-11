@@ -1,0 +1,118 @@
+ORG 0x2A5
+addr: WORD 0x2FF ; адрес массива -1
+STOP: WORD 0x61 ; стоп символ (a)
+length: WORD ? ; кол-во введенных символов
+
+char: WORD ? ; текущий символ
+
+cur_addr: WORD ? ; текущий  адрес
+rev_addr: WORD ? ; адрес для вывода
+
+; подготовка
+START:
+	CLA
+	ST length
+	LD STOP
+	ST (addr)+
+	LD addr
+	ST cur_addr
+
+; цикл ввода
+READ_LOOP:
+	IN 0x19
+	AND #0x40
+	BEQ READ_LOOP
+	
+	IN 0x18
+	ST char
+	CMP STOP
+	BEQ REVERSE
+	
+	LD length
+	AND #0x01
+	BNE EVEN_CHAR
+
+; нечётный
+ODD_CHAR:
+	LD char
+	SWAB
+	ST (cur_addr)
+	JUMP INC_LEN
+
+; чётный
+EVEN_CHAR:
+	LD (cur_addr)
+	ADD char
+	ST (cur_addr)
+	JUMP INC_CUR_ADDR
+
+; увеличить текущий  адрес
+INC_CUR_ADDR:
+	LD cur_addr
+	INC
+	ST cur_addr
+
+; увеличить кол-во введенных символов
+INC_LEN:
+	LD length
+	INC
+	ST length
+	JUMP READ_LOOP
+
+; подготовка к выводу
+REVERSE:
+	LD cur_addr
+	INC
+	ST rev_addr
+
+; цикл вывода
+REVERSE_LOOP:	
+	LD -(rev_addr)
+
+	CMP STOP
+	BEQ EXIT
+	
+	SWAB
+	AND #0xFF
+	ST char
+
+; проверка символа
+CHECK:
+	LD char
+	
+	;CMP C6
+	;BGE NEXT
+	;CMP C5
+	;BGE WRITE
+	;CMP C4
+	;BGE NEXT
+	;CMP C3
+	;BGE WRITE
+	;CMP C2
+	;BGE NEXT
+	;CMP C1
+	;BGE WRITE
+	;JUMP NEXT
+	
+; ожидание и вывод
+WRITE:
+	;IN 0x0D
+	;AND #0x40
+	;BEQ WRITE
+	
+	LD char
+	OUT 0xC
+
+; переход к следующему
+NEXT:
+	JUMP REVERSE_LOOP
+
+EXIT:
+	HLT
+
+C1: WORD 0x21
+C2: WORD 0x41
+C3: WORD 0x5B
+C4: WORD 0x61
+C5: WORD 0x7B
+C6: WORD 0x7F

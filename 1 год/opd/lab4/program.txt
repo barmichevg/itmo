@@ -1,0 +1,49 @@
+ORG 0x34C
+START: ; Result = f(X)+f(Z)-1-f(Y-1)
+    CLA
+    ST R
+    LD X
+    PUSH
+    CALL $function
+    POP
+    ADD R
+    ST R
+    LD Z
+    PUSH
+    CALL $function
+    POP
+    DEC
+    ADD R
+    ST R
+    LD Y
+    DEC
+    PUSH
+    CALL $function
+    POP
+    SUB R
+    ST R
+    HLT
+    Z: WORD 0x0000 ;Z
+    Y: WORD 0x0001 ;Y
+    X: WORD 0x0000 ;X
+    R: WORD 0x0031 ;R
+
+
+ORG 0x67A
+function: ; f(x) = if (x>0 | x<=-29486) then return -29486 else return 5x - 0x0031
+    LD &1
+    BEQ ifz1
+    BPL exit
+    ifz1: CMP var_1
+    BLT exit
+    BEQ exit
+    ASL
+    ASL
+    ADD &1
+    SUB var_2
+    JUMP return
+    exit: LD var_1
+    return: ST &1
+    RET
+    var_1: WORD 0xF32E
+    var_2: WORD 0x0035
