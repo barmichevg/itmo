@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>ЛР FastCGI — Проверка попадания точки</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    html, body { height: 100%; }
+    body { font-family: system-ui; color:#000; }
+
+    header h1 { font-family: cursive; color:#2158d6; font-size: 28px; margin:0; }
+    header h1::first-letter { font-size: 140%; }
+    header small { color:#000; }
+
+    /* Табличная вёрстка */
+    table.layout { width:100%; border-collapse: collapse; }
+    table.layout td { vertical-align: top; padding: 8px; }
+
+    table.form { border-collapse: collapse; }
+    table.form td { padding:6px 8px; }
+    table.form td label { display:inline-block; min-width:90px; }
+
+    /* Отступы */
+    .controls input[type="text"],
+    .controls select {
+      padding: 1%;
+      margin: 1%;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+    }
+    .controls input[type="checkbox"] { margin: 1%; }
+    .controls input[type="text"]:focus { outline: 2px solid #a4c2ff; }
+
+    /* Кнопка */
+    .btn {
+      padding: 1% 2%;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+      background: #f0f0f0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn:hover { filter: brightness(0.95); }
+
+    /* График */
+    #canvas-wrap { text-align: center; }
+    #plot { border:1px solid #aaa; border-radius: 6px; }
+
+    /* История (отдельный ползунок) */
+    .history-box {
+      max-height: 40vh;
+      min-height: 300px;
+      overflow: auto;
+      border: 1px solid #aaa;
+      border-radius: 1px;
+      background: #fff;
+    }
+    /* таблица внутри скролла */
+    table#results { width:100%; border-collapse: collapse; }
+    table#results th, table#results td { border:1px solid #aaa; padding:6px; text-align:center; }
+    table#results thead th { background: #f0f0f0; position: sticky; top: 0; z-index: 1; }
+
+    .error { color:#b00020; }
+    table.form input { outline-offset: 1px; }
+
+
+  </style>
+</head>
+
+<body>
+<header>
+  <table class="layout">
+    <tr>
+      <td>
+        <h1>Бармичев Григорий Андреевич — P3210</h1>
+        <small>Веб-программирование — Лабораторная работа #1 — Вариант 465142</small>
+      </td>
+    </tr>
+  </table>
+</header>
+
+<main>
+  <table class="layout">
+    <tr>
+      <!-- Левая колонка -->
+      <td style="width:460px">
+        <form id="hit-form" method="get" class="controls" onsubmit="return false;">
+
+          <table class="form">
+            
+            <!-- X -->
+            <tr>
+              <td><label>X:</label></td>
+              <td id="x-boxes">
+                <label><input type="checkbox" name="x" value="-2"> -2</label>
+                <label><input type="checkbox" name="x" value="-1.5"> -1.5</label>
+                <label><input type="checkbox" name="x" value="-1"> -1</label>
+                <label><input type="checkbox" name="x" value="-0.5"> -0.5</label>
+                <label><input type="checkbox" name="x" value="0"> 0</label>
+                <label><input type="checkbox" name="x" value="0.5"> 0.5</label>
+                <label><input type="checkbox" name="x" value="1"> 1</label>
+                <label><input type="checkbox" name="x" value="1.5"> 1.5</label>
+                <label><input type="checkbox" name="x" value="2"> 2</label>
+              </td>
+            </tr>
+
+            <!-- Y -->
+            <tr>
+              <td><label for="y">Y:</label></td>
+              <td>
+                <input id="y" name="y" type="text" placeholder="-5 .. 5" maxlength="12"
+                       title="Число от -5 до 5"/>
+              </td>
+            </tr>
+
+            <!-- R -->
+            <tr>
+              <td>R:</td>
+              <td id="r-boxes">
+                <label><input type="checkbox" name="r" value="1"> 1</label>
+                <label><input type="checkbox" name="r" value="1.5"> 1.5</label>
+                <label><input type="checkbox" name="r" value="2"> 2</label>
+                <label><input type="checkbox" name="r" value="2.5"> 2.5</label>
+                <label><input type="checkbox" name="r" value="3"> 3</label>
+              </td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td>
+                <button class="btn" id="send" type="submit">Проверить</button>
+                <span id="err" class="error" aria-live="polite" style="margin-left:8px;"></span>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Демонстрация GET -->
+          <div style="margin-top:6px;">
+            <small>GET-запрос к FastCGI:</small><br/>
+            <small id="raw-link"></small>
+          </div>
+        </form>
+
+        <noscript>
+          <p class="error">Для AJAX-отправки включите JavaScript.</p>
+        </noscript>
+      </td>
+
+      <!-- График -->
+      <td>
+        <div id="canvas-wrap">
+          <canvas id="plot" width="600" height="400"></canvas>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- История (собственный скролл) -->
+  <table class="layout">
+    <tr>
+      <td>
+        <div class="history-box" aria-label="История запросов (прокручиваемая)">
+          <table id="results">
+            <thead>
+            <tr>
+              <th>X</th><th>Y</th><th>R</th><th>Попадание</th><th>Текущее время</th><th>Время скрипта</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+</main>
+
+<script>
+  const FCGI_PATH = '/fcgi-bin/Server.jar';
+
+  // Делает чекбоксы взаимоисключающими
+  function makeExclusive(containerSelector) {
+    document.querySelectorAll(containerSelector + ' input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) {
+          document.querySelectorAll(containerSelector + ' input[type="checkbox"]').forEach(other => {
+            if (other !== cb) other.checked = false;
+          });
+          // при смене R сразу перерисуем область
+          if (containerSelector === '#r-boxes') drawScene();
+        }
+      });
+    });
+  }
+  makeExclusive('#x-boxes');
+  makeExclusive('#r-boxes');
+
+  function selectedIn(containerSelector) {
+    const c = document.querySelector(containerSelector + ' input[type="checkbox"]:checked');
+    return c ? c.value : null;
+  }
+  const selectedX = () => selectedIn('#x-boxes');
+  const selectedR = () => selectedIn('#r-boxes');
+
+  // Валидация значений
+  function validate() {
+    const err = document.getElementById('err'); err.textContent = '';
+
+    const xStr = selectedX();
+    const yStr = document.getElementById('y').value.trim().replace(',', '.');
+    const rStr = selectedR();
+
+    const allowedX = new Set([-2,-1.5,-1,-0.5,0,0.5,1,1.5,2]);
+    const allowedR = new Set([1,1.5,2,2.5,3]);
+
+    if (xStr === null) { err.textContent = 'Выберите X'; return null; }
+    const x = Number(xStr);
+    if (!allowedX.has(x)) { err.textContent = 'X имеет недопустимое значение'; return null; }
+
+    if (yStr === '' || Number.isNaN(Number(yStr))) { err.textContent = 'Y имеет недопустимое значение'; return null; }
+    const y = Number(yStr);
+    if (y < -5 || y > 5) { err.textContent = 'Y вне диапазона [-5..5]'; return null; }
+
+    if (rStr === null) { err.textContent = 'Выберите R'; return null; }
+    const r = Number(rStr);
+    if (!allowedR.has(r)) { err.textContent = 'R имеет недопустимое значение'; return null; }
+
+    return { x, y, r };
+  }
+
+  // График
+  const CANVAS = document.getElementById('plot');
+  const CTX = CANVAS.getContext('2d');
+  const RMAX = 3;
+  const PAD  = 24;
+  function unit() {
+    return (Math.min(CANVAS.width, CANVAS.height) - PAD*2) / (RMAX*2);
+  }
+  function toPx(x, y) {
+    const s = unit();
+    const cx = CANVAS.width  / 2;
+    const cy = CANVAS.height / 2;
+    return { px: cx + x * s, py: cy - y * s };
+  }
+
+  function drawAxes(rVal) {
+    const s = unit();
+    const cx = CANVAS.width  / 2;
+    const cy = CANVAS.height / 2;
+
+    CTX.save();
+    CTX.strokeStyle = '#333';
+    CTX.lineWidth = 1;
+
+    // Оси
+    CTX.beginPath();
+    CTX.moveTo(PAD/2, cy); CTX.lineTo(CANVAS.width - PAD/2, cy); // OX
+    CTX.moveTo(cx, PAD/2); CTX.lineTo(cx, CANVAS.height - PAD/2); // OY
+    CTX.stroke();
+
+    // Стрелки
+    CTX.beginPath();
+    CTX.moveTo(CANVAS.width - PAD/2, cy);
+    CTX.lineTo(CANVAS.width - PAD/2 - 8, cy - 4);
+    CTX.lineTo(CANVAS.width - PAD/2 - 8, cy + 4);
+    CTX.closePath(); CTX.fill();
+
+    CTX.beginPath();
+    CTX.moveTo(cx, PAD/2);
+    CTX.lineTo(cx - 4, PAD/2 + 8);
+    CTX.lineTo(cx + 4, PAD/2 + 8);
+    CTX.closePath(); CTX.fill();
+
+    // Засечки
+    if (rVal) {
+      const ticks = [-rVal, -rVal/2, rVal/2, rVal];
+      CTX.fillStyle = '#333';
+      CTX.textAlign = 'center';
+      CTX.textBaseline = 'top';
+      for (const t of ticks) {
+        const {px} = toPx(t, 0);
+        CTX.beginPath();
+        CTX.moveTo(px, cy - 4); CTX.lineTo(px, cy + 4); CTX.stroke();
+        CTX.fillText(String(t), px, cy + 6);
+      }
+      CTX.textAlign = 'right';
+      CTX.textBaseline = 'middle';
+      for (const t of ticks) {
+        const {py} = toPx(0, t);
+        CTX.beginPath();
+        CTX.moveTo(cx - 4, py); CTX.lineTo(cx + 4, py); CTX.stroke();
+        CTX.fillText(String(t), cx - 6, py);
+      }
+    }
+    CTX.restore();
+  }
+
+  // Область попадания
+  function drawArea(rVal) {
+    if (!rVal) return;
+    CTX.save();
+    CTX.fillStyle = 'rgba(58,134,255,0.25)';
+    CTX.strokeStyle = 'rgba(58,134,255,0.6)';
+    CTX.lineWidth = 1;
+
+        // 1 четверть
+    {
+      const A = toPx(0,0);
+      const B = toPx(0, rVal);
+      const C = toPx(rVal/2, 0);
+      CTX.beginPath();
+      CTX.moveTo(A.px, A.py);
+      CTX.lineTo(B.px, B.py);
+      CTX.lineTo(C.px, C.py);
+      CTX.closePath();
+      CTX.fill(); CTX.stroke();
+    }
+
+    // 2 четверть
+    {
+      const c = toPx(0,0);
+      const s = unit()*rVal;
+      CTX.beginPath();
+      CTX.moveTo(c.px, c.py);
+      CTX.arc(c.px, c.py, s, 0, Math.PI/2, false);
+      CTX.closePath();
+      CTX.fill(); CTX.stroke();
+    }
+
+    // 3 четверть
+    {
+      const a = toPx(-rVal, -rVal);
+      const b = toPx(0, 0);
+      const w = b.px - a.px, h = b.py - a.py;
+      CTX.beginPath();
+      CTX.rect(a.px, a.py, w, h);
+      CTX.fill(); CTX.stroke();
+    }
+
+    CTX.restore();
+  }
+
+  // Точка
+  function drawPoint(x, y, hit) {
+    const {px, py} = toPx(x, y);
+    CTX.save();
+    CTX.fillStyle = hit ? '#21a366' : '#d62828';
+    CTX.strokeStyle = '#333';
+    CTX.beginPath();
+    CTX.arc(px, py, 4, 0, Math.PI*2);
+    CTX.fill();
+    CTX.stroke();
+    CTX.restore();
+  }
+
+  function clearCanvas() {
+    CTX.clearRect(0,0,CANVAS.width, CANVAS.height);
+  }
+
+  function drawScene(lastRow = null) {
+    const rStr = selectedR();
+    const rVal = rStr ? Number(rStr) : null;
+    clearCanvas();
+    drawAxes(rVal);
+    drawArea(rVal);
+    if (lastRow) drawPoint(lastRow.x, lastRow.y, !!lastRow.hit);
+  }
+
+  drawScene();
+
+  // Валидация и запрос
+  async function onSubmit(ev) {
+    ev.preventDefault();
+    const params = validate();
+    const linkEl = document.getElementById('raw-link');
+
+    if (!params) { linkEl.textContent = ''; return; }
+
+    const qs = new URLSearchParams(params).toString();
+    linkEl.innerHTML = `<a href="${FCGI_PATH}?${qs}" target="_blank">${FCGI_PATH}?${qs}</a>`;
+
+    const btn = document.getElementById('send');
+    btn.disabled = true;
+
+    try {
+      const res = await fetch(`${FCGI_PATH}?${qs}`, { method: 'GET' });
+      const data = await res.json();
+
+      if (!data.ok) {
+        document.getElementById('err').textContent = data.error || 'Ошибка сервера';
+        return;
+      }
+
+      // Обновление истории
+      const tbody = document.querySelector('#results tbody');
+      tbody.innerHTML = '';
+      for (const row of (data.history || [])) {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          `<td>${row.x}</td><td>${row.y}</td><td>${row.r}</td>` +
+          `<td>${row.hit ? 'Да' : 'Нет'}</td>` +
+          `<td>${row.now}</td><td>${row.scriptMicros}</td>`;
+        tbody.appendChild(tr);
+      }
+
+      // Точка
+      const last = (data.data || (data.history && data.history[data.history.length-1])) || null;
+      drawScene(last);
+    } catch (e) {
+      document.getElementById('err').textContent = 'Сеть/сервер недоступны';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('hit-form').addEventListener('submit', onSubmit);
+</script>
+</body>
+</html>

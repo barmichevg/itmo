@@ -1,0 +1,14 @@
+/home/username/Desktop/PL/sem8/Ws8/bin/Debug/net10.0/Ws8
+/home/username/Desktop/PL/sem8/Ws8/bin/Debug/net10.0/Ws8.deps.json
+/home/username/Desktop/PL/sem8/Ws8/bin/Debug/net10.0/Ws8.runtimeconfig.json
+/home/username/Desktop/PL/sem8/Ws8/bin/Debug/net10.0/Ws8.dll
+/home/username/Desktop/PL/sem8/Ws8/bin/Debug/net10.0/Ws8.pdb
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.GeneratedMSBuildEditorConfig.editorconfig
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.AssemblyInfoInputs.cache
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.AssemblyInfo.cs
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.csproj.CoreCompileInputs.cache
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.dll
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/refint/Ws8.dll
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.pdb
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/Ws8.genruntimeconfig.cache
+/home/username/Desktop/PL/sem8/Ws8/obj/Debug/net10.0/ref/Ws8.dll

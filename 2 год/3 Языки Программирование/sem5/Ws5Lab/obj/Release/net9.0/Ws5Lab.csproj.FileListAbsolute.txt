@@ -1,0 +1,14 @@
+/home/username/Desktop/PL/sem5/Ws5Lab/bin/Release/net9.0/Ws5Lab
+/home/username/Desktop/PL/sem5/Ws5Lab/bin/Release/net9.0/Ws5Lab.deps.json
+/home/username/Desktop/PL/sem5/Ws5Lab/bin/Release/net9.0/Ws5Lab.runtimeconfig.json
+/home/username/Desktop/PL/sem5/Ws5Lab/bin/Release/net9.0/Ws5Lab.dll
+/home/username/Desktop/PL/sem5/Ws5Lab/bin/Release/net9.0/Ws5Lab.pdb
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.GeneratedMSBuildEditorConfig.editorconfig
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.AssemblyInfoInputs.cache
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.AssemblyInfo.cs
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.csproj.CoreCompileInputs.cache
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.dll
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/refint/Ws5Lab.dll
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.pdb
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/Ws5Lab.genruntimeconfig.cache
+/home/username/Desktop/PL/sem5/Ws5Lab/obj/Release/net9.0/ref/Ws5Lab.dll

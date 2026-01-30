@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: lab4_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: lab4
+      POSTGRES_USER: lab4
+      POSTGRES_PASSWORD: lab4
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
