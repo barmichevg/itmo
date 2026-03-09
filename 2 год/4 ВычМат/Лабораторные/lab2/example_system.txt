@@ -1,0 +1,6 @@
+type=system
+number=2
+method=7
+x0=3.5
+y0=-0.5
+eps=0.01

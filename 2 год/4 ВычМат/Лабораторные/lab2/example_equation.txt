@@ -1,0 +1,6 @@
+type=equation
+number=1
+method=3
+a=-4
+b=-3.8
+eps=0.01
