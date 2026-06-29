@@ -1,0 +1,162 @@
+/* темы */
+:root{
+    --bg:#ffffff;
+    --fg:#0f172a;
+    --muted:#444444;
+    --panel:#ffffff;
+    --border:#d1d5db;
+    --primary:#2158d6;
+    --focus:#a4c2ff;
+    --good:#1a7f37;
+    --bad:#d32f2f;
+    --shade:rgba(58,134,255,.22);
+    --shade-stroke:rgba(58,134,255,.55);
+}
+
+html[data-theme="dark"]{
+    --bg:#0d1117;
+    --fg:#e6edf3;
+    --muted:#bcbcbc;
+    --panel:#161b22;
+    --border:#30363d;
+    --primary:#8ab4ff;
+    --focus:#3a86ff;
+    --good:#27d17f;
+    --bad:#ff7b72;
+    --shade:rgba(138,180,255,.18);
+    --shade-stroke:rgba(138,180,255,.50);
+}
+
+/* общее */
+html, body { height:100%; }
+body {
+    font-family: system-ui;
+    color:var(--fg); background:var(--bg); margin:0;
+}
+
+.header-wrap{ text-align:center; margin:8px 0 6px; }
+.header-wrap h1{ margin:4px 0 2px; color:var(--primary); }
+.header-wrap small{ display:block; opacity:.9; }
+
+table.layout { width:100%; border-collapse:collapse; }
+table.layout td { vertical-align:top; padding:8px; }
+
+table.form{ border-collapse:collapse; }
+table.form td{ padding:6px 8px; }
+table.form td label{ display:inline-block; min-width:90px; }
+
+.controls input[type="text"],
+.controls select{
+    padding:6px 8px; margin:4px 0;
+    border:1px solid var(--border); border-radius:6px;
+    background:var(--panel); color:var(--fg);
+}
+.controls input[type="radio"]{ margin:0 6px 0 0; }
+.controls input[type="text"]:focus{ outline:2px solid var(--focus); }
+.btn{
+    padding:6px 12px; border:1px solid var(--border);
+    border-radius:10px; background:var(--panel);
+    color:var(--fg); cursor:pointer; user-select:none;
+}
+.btn:hover{ filter:brightness(0.95); }
+.theme-btn{
+    position:fixed; top:12px; right:12px;
+    padding:8px 10px; border:1px solid var(--border);
+    background:var(--panel); color:var(--fg);
+    border-radius:12px; cursor:pointer; line-height:1; font-size:14px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.theme-btn:hover{ filter:brightness(1.05); }
+
+/* canvas*/
+#plot{
+    border:1px solid var(--border);
+    border-radius:6px; background:var(--panel);
+    max-width:100%;
+}
+
+/* история */
+.history-box{
+    position:relative;
+    max-height:40vh; min-height:300px;
+    overflow:auto; border:1px solid var(--border);
+    border-radius:1px; background:var(--panel);
+}
+
+#results{
+    width:100%; table-layout:fixed;
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+#results thead tr{
+    position:sticky; top:0; z-index:6;
+    background-color:var(--panel);
+}
+
+#results thead th{
+    position:sticky; top:0; z-index:7;
+    background-color:var(--panel);
+    box-shadow:0 1px 0 var(--border);
+}
+
+#results th, #results td{
+    border:1px solid var(--border);
+    padding:6px; text-align:center;
+    color:var(--fg); background:var(--panel);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.col-actions{ width:44px; }
+.col-x{ width:180px; max-width:180px; }
+.btn-small{ padding:4px 8px; border-radius:8px; }
+tr.active-row{ background:rgba(58,134,255,.08); }
+
+html[data-theme="dark"] tr.active-row{ background:rgba(138,180,255,.12); }
+.good{ color:var(--good) }
+.bad{ color:var(--bad) }
+.error{ color:var(--bad) }
+.last-check{
+    margin:6px 0 4px; max-width:52ch;
+    overflow-wrap:anywhere; word-break:break-word; white-space:normal;
+}
+
+/* ползунок R */
+.r-slider{
+    width:220px;
+    margin-top:6px;
+    background:transparent;
+}
+.r-slider::-webkit-slider-runnable-track{
+    height:4px;
+    border-radius:999px;
+    background:var(--border);
+}
+.r-slider::-moz-range-track{
+    height:4px;
+    border-radius:999px;
+    background:var(--border);
+}
+.r-slider::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--primary);
+    border:2px solid var(--panel);
+    box-shadow:0 0 0 2px var(--primary);
+    cursor:pointer;
+    margin-top:-6px;
+}
+.r-slider::-moz-range-thumb{
+    width:16px; height:16px;
+    border-radius:50%;
+    background:var(--primary);
+    border:2px solid var(--panel);
+    box-shadow:0 0 0 2px var(--primary);
+    cursor:pointer;
+}
+.r-value{
+    display:inline-block;
+    min-width:60px;
+    margin-left:8px;
+}

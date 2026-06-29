@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="lab3" default="test" basedir=".">
+    <property file="build.properties"/>
+
+    <path id="project.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="test.classpath">
+        <pathelement location="${classes.dir}"/>
+        <pathelement location="${test.classes.dir}"/>
+        <path refid="project.classpath"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${classes.dir}"/>
+        <mkdir dir="${test.classes.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${reports.dir}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}"
+               destdir="${classes.dir}"
+               encoding="${encoding}"
+               release="${java.release}"
+               includeantruntime="false"
+               classpathref="project.classpath">
+            <include name="**/*.java"/>
+        </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${resources.dir}" erroronmissingdir="false"/>
+        </copy>
+    </target>
+
+    <target name="manifest" depends="compile">
+        <manifest file="${manifest.file}">
+            <attribute name="Manifest-Version" value="1.0"/>
+            <attribute name="Created-By" value="Apache Ant"/>
+            <attribute name="Implementation-Title" value="${project.name}"/>
+            <attribute name="Implementation-Version" value="${project.version}"/>
+            <attribute name="Main-Class" value="${main.class}"/>
+        </manifest>
+    </target>
+
+    <target name="build" depends="compile,manifest">
+        <jar destfile="${jar.file}" manifest="${manifest.file}">
+            <fileset dir="${classes.dir}"/>
+            <zipfileset dir="${webapp.dir}" prefix="webapp" erroronmissingdir="false"/>
+        </jar>
+
+        <echo message="JAR created: ${jar.file}"/>
+    </target>
+
+    <target name="compile-tests" depends="build">
+        <javac srcdir="${test.src.dir}"
+               destdir="${test.classes.dir}"
+               encoding="${encoding}"
+               release="${java.release}"
+               includeantruntime="false"
+               classpathref="test.classpath">
+            <include name="**/*.java"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="compile-tests">
+        <junit printsummary="yes"
+               fork="true"
+               haltonfailure="true"
+               haltonerror="true">
+            <classpath refid="test.classpath"/>
+            <formatter type="plain" usefile="false"/>
+            <formatter type="xml"/>
+            <batchtest todir="${reports.dir}">
+                <fileset dir="${test.classes.dir}">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+
+        <echo message="JUnit XML report saved to: ${reports.dir}"/>
+    </target>
+
+    <target name="javadoc" depends="compile">
+        <mkdir dir="${javadoc.dir}"/>
+
+        <javadoc destdir="${javadoc.dir}"
+                 sourcepath="${src.dir}"
+                 encoding="${encoding}"
+                 charset="${encoding}"
+                 docencoding="${encoding}"
+                 source="${java.release}"
+                 author="true"
+                 version="true"
+                 use="true"
+                 failonerror="true"
+                 classpathref="project.classpath">
+
+            <packageset dir="${src.dir}">
+                <include name="**"/>
+            </packageset>
+        </javadoc>
+
+        <echo message="Javadoc generated: ${javadoc.dir}"/>
+    </target>
+
+    <target name="checksum">
+        <checksum algorithm="MD5" totalproperty="project.md5">
+            <fileset dir="${basedir}">
+                <include name="src/**"/>
+                <include name="build.xml"/>
+                <include name="build.properties"/>
+                <include name="lib/**"/>
+
+                <exclude name="ant/**"/>
+                <exclude name="build/**"/>
+                <exclude name=".gradle/**"/>
+                <exclude name=".idea/**"/>
+                <exclude name="bin/**"/>
+                <exclude name=".svn/**"/>
+            </fileset>
+        </checksum>
+
+        <checksum algorithm="SHA-1" totalproperty="project.sha1">
+            <fileset dir="${basedir}">
+                <include name="src/**"/>
+                <include name="build.xml"/>
+                <include name="build.properties"/>
+                <include name="lib/**"/>
+
+                <exclude name="ant/**"/>
+                <exclude name="build/**"/>
+                <exclude name=".gradle/**"/>
+                <exclude name=".idea/**"/>
+                <exclude name="bin/**"/>
+                <exclude name=".svn/**"/>
+            </fileset>
+        </checksum>
+
+        <echo message="Project MD5: ${project.md5}"/>
+        <echo message="Project SHA-1: ${project.sha1}"/>
+    </target>
+
+    <target name="doc" depends="build,javadoc,checksum">
+        <manifest file="${manifest.file}">
+            <attribute name="Manifest-Version" value="1.0"/>
+            <attribute name="Created-By" value="Apache Ant"/>
+            <attribute name="Implementation-Title" value="${project.name}"/>
+            <attribute name="Implementation-Version" value="${project.version}"/>
+            <attribute name="Main-Class" value="${main.class}"/>
+            <attribute name="Project-MD5" value="${project.md5}"/>
+            <attribute name="Project-SHA1" value="${project.sha1}"/>
+        </manifest>
+
+        <jar destfile="${jar.file}"
+             update="true"
+             manifest="${manifest.file}">
+
+            <zipfileset dir="${javadoc.dir}" prefix="javadoc"/>
+        </jar>
+
+        <echo message="MANIFEST.MF updated with MD5 and SHA-1."/>
+        <echo message="Javadoc added to JAR: ${jar.file}"/>
+    </target>
+
+    <target name="report" depends="test">
+        <echo message="Adding JUnit XML report to SVN..."/>
+
+        <exec executable="${svn.executable}" dir="${basedir}" failonerror="true">
+            <arg value="add"/>
+            <arg value="--force"/>
+            <arg value="${svn.report.path}"/>
+        </exec>
+
+        <echo message="Committing JUnit XML report to SVN..."/>
+
+        <exec executable="${svn.executable}" dir="${basedir}" failonerror="true">
+            <arg value="commit"/>
+            <arg value="${svn.report.path}"/>
+            <arg value="-m"/>
+            <arg value="${svn.commit.message}"/>
+        </exec>
+
+        <echo message="JUnit XML report committed to SVN."/>
+    </target>
+
+    <target name="clean">
+        <delete dir="${ant.dir}"/>
+        <echo message="Ant build files removed."/>
+    </target>
+
+</project>

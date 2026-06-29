@@ -1,0 +1,16 @@
+﻿order,feature,pheromone
+1,data_channel_is_lifestyle,0.8624
+2,data_channel_is_world,0.5684
+3,data_channel_is_entertainment,0.3144
+4,n_unique_tokens,0.3104
+5,data_channel_is_tech,0.2644
+6,data_channel_is_bus,0.23440000000000005
+7,data_channel_is_socmed,0.21440000000000003
+8,self_reference_min_shares,0.16640000000000002
+9,avg_positive_polarity,0.15240000000000004
+10,n_non_stop_unique_tokens,0.15240000000000004
+11,weekday_is_wednesday,0.14240000000000005
+12,weekday_is_monday,0.14240000000000005
+13,self_reference_avg_sharess,0.14240000000000005
+14,weekday_is_tuesday,0.14240000000000005
+15,LDA_03,0.13440000000000005

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>ЛР3 — Попадание точки (JSF)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="#{facesContext.externalContext.requestContextPath}/static/style.css"/>
+</h:head>
+<h:body>
+
+    <button id="theme-toggle" class="theme-btn" type="button" aria-label="Переключить тему">
+        🌙 Тема
+    </button>
+
+    <h:panelGroup layout="block" styleClass="header-wrap">
+        <h1>Бармичев Григорий Андреевич — P3210</h1>
+        <small>Веб-программирование — Лабораторная работа #3 — Вариант 11</small>
+    </h:panelGroup>
+
+    <h:panelGroup layout="block" style="text-align:left; margin-left:0; padding-left:0;">
+
+        <div style="margin: 8px 0 16px 0;">
+            <h:form>
+                <h:commandButton value="⟵ На стартовую страницу" styleClass="btn" action="start"/>
+            </h:form>
+        </div>
+
+        <!-- форма -->
+        <table class="layout" style="margin:0; margin-left:0;">
+            <tr>
+                <td style="width:440px">
+                    <div class="controls-card" style="padding:16px;border-radius:16px;border:1px solid rgba(0,0,0,0.08);">
+                        <h:form id="hit-form" styleClass="controls">
+                            <h:inputHidden id="fromCanvas" value="#{hitBean.fromCanvas}"/>
+                            <table class="form">
+
+                                <!-- X -->
+                                <tr>
+                                    <td>X:</td>
+                                    <td>
+                                        <h:inputHidden id="xHidden" value="#{hitBean.x}"/>
+                                        <div class="x-options">
+                                            <table class="x-grid">
+                                                <tr>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_m2" onclick="selectX(-2, this)"/>
+                                                        <h:outputLabel for="x_m2" value="-2" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_m15" onclick="selectX(-1.5, this)"/>
+                                                        <h:outputLabel for="x_m15" value="-1.5" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_m1" onclick="selectX(-1, this)"/>
+                                                        <h:outputLabel for="x_m1" value="-1" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_m05" onclick="selectX(-0.5, this)"/>
+                                                        <h:outputLabel for="x_m05" value="-0.5" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_0" onclick="selectX(0, this)"/>
+                                                        <h:outputLabel for="x_0" value="0" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_p05" onclick="selectX(0.5, this)"/>
+                                                        <h:outputLabel for="x_p05" value="0.5" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_p1" onclick="selectX(1, this)"/>
+                                                        <h:outputLabel for="x_p1" value="1" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_p15" onclick="selectX(1.5, this)"/>
+                                                        <h:outputLabel for="x_p15" value="1.5" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                    <td style="white-space:nowrap;padding-right:12px;">
+                                                        <h:selectBooleanCheckbox id="x_p2" onclick="selectX(2, this)"/>
+                                                        <h:outputLabel for="x_p2" value="2" style="display:inline-block;margin-left:4px;"/>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Y -->
+                                <tr>
+                                    <td>Y:</td>
+                                    <td>
+                                        <h:inputText id="y" value="#{hitBean.y}">
+                                            <f:passThroughAttribute name="placeholder" value="-3 .. 5"/>
+                                        </h:inputText>
+                                    </td>
+                                </tr>
+
+                                <!-- R -->
+                                <tr>
+                                    <td>R:</td>
+                                    <td>
+                                        <h:inputHidden id="rHidden" value="#{hitBean.r}"/>
+                                        <input id="rSlider" type="range"
+                                               min="2" max="5" step="0.25"
+                                               class="r-slider"
+                                               oninput="onRSliderChange(this.value)"/>
+                                        <span id="rValue" class="r-value"/>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Кнопки проверить, очистить -->
+                            <div class="buttons-row" style="margin-top:8px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                                <h:commandButton id="checkBtn"
+                                                 value="Проверить точку"
+                                                 styleClass="btn"
+                                                 action="#{hitBean.check}">
+                                    <f:ajax execute="@form"
+                                            render="@form :resultsPanel :lastCheck"
+                                            onevent="if (event.status === 'success' &amp;&amp; window.updatePlotFromDom) updatePlotFromDom();"/>
+                                </h:commandButton>
+
+                                <h:commandButton id="clearBtn"
+                                                 value="Очистить историю"
+                                                 styleClass="btn"
+                                                 action="#{results.clear}">
+                                    <f:ajax execute="@this"
+                                            render=":resultsPanel :lastCheck"
+                                            onevent="if (event.status === 'success' &amp;&amp; window.updatePlotFromDom) updatePlotFromDom();"/>
+                                </h:commandButton>
+                            </div>
+                        </h:form>
+
+                        <!-- Последняя проверка -->
+                        <h:panelGroup id="lastCheck" layout="block" styleClass="last-check" rendered="#{not empty results.results}">
+                            Последняя проверка:
+                            (x=#{results.results[0].x},
+                            y=#{results.results[0].y},
+                            r=#{results.results[0].r})
+                            →
+                            <strong class="#{results.results[0].hit ? 'good' : 'bad'}">
+                                #{results.results[0].hit ? 'ПОПАДАНИЕ' : 'МИМО'}
+                            </strong>
+                        </h:panelGroup>
+
+                        <!-- Неправильный ввод -->
+                        <h:messages id="messages"
+                                    globalOnly="false"
+                                    layout="list"
+                                    styleClass="error"
+                                    style="margin-top:8px;"/>
+                    </div>
+                </td>
+                <td>
+                    <canvas id="plot" width="720" height="420"/>
+                </td>
+            </tr>
+        </table>
+    </h:panelGroup>
+
+    <!-- История -->
+    <h:panelGroup id="resultsPanel" layout="block" styleClass="history-box" style="margin-top:12px">
+        <table id="results">
+            <thead>
+            <tr>
+                <th class="col-actions">
+                    <button type="button" class="btn" onclick="showAllPoints()">Все</button>
+                </th>
+                <th>X</th>
+                <th>Y</th>
+                <th>R</th>
+                <th>Попадание</th>
+                <th>Время</th>
+                <th>Время скрипта, μs</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <!-- История -->
+            <ui:repeat value="#{results.page}" var="row">
+                <tr>
+                    <td class="col-actions">
+                        <button type="button" class="btn" onclick="showPointFromRow(this)">▶</button>
+                    </td>
+                    <td>#{row.x}</td>
+                    <td>#{row.y}</td>
+                    <td>#{row.r}</td>
+                    <td>
+                <span class="#{row.hit ? 'good' : 'bad'}">
+                    #{row.hit ? 'Да' : 'Нет'}
+                </span>
+                    </td>
+                    <td>#{row.at}</td>
+                    <td>#{row.scriptMicros}</td>
+                </tr>
+            </ui:repeat>
+            </tbody>
+        </table>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding:4px 6px;font-size:13px;">
+        <span style="color:var(--muted);">
+            Страница #{results.pageIndex + 1} из #{results.pageCount}
+        </span>
+
+            <h:form>
+                <h:commandButton value="⟨⟨" styleClass="btn btn-small" action="#{results.firstPage}">
+                    <f:ajax render=":resultsPanel" onevent="if (event.status === 'success' &amp;&amp; window.updatePlotFromDom) updatePlotFromDom();"/>
+                </h:commandButton>
+
+                <h:commandButton value="⟨" styleClass="btn btn-small" action="#{results.prevPage}">
+                    <f:ajax render=":resultsPanel" onevent="if (event.status === 'success' &amp;&amp; window.updatePlotFromDom) updatePlotFromDom();"/>
+                </h:commandButton>
+
+                <h:commandButton value="⟩" styleClass="btn btn-small" action="#{results.nextPage}">
+                    <f:ajax render=":resultsPanel" onevent="if (event.status === 'success' &amp;&amp; window.updatePlotFromDom) updatePlotFromDom();"/>
+                </h:commandButton>
+
+                <h:commandButton value="⟩⟩" styleClass="btn btn-small" action="#{results.lastPage}">
+                    <f:ajax render=":resultsPanel" onevent="if (event.status === 'success' &amp;&amp; window.updatePlotFromDom) updatePlotFromDom();"/>
+                </h:commandButton>
+            </h:form>
+        </div>
+    </h:panelGroup>
+
+    <script src="#{facesContext.externalContext.requestContextPath}/static/main.js"></script>
+    <script src="#{facesContext.externalContext.requestContextPath}/static/theme.js"></script>
+</h:body>
+</html>

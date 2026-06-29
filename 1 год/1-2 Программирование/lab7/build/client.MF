@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: client.ClientApp
+Class-Path: lib/logback-classic-1.4.7.jar lib/logback-core-1.4.7.jar lib/opencsv-2.4.jar lib/postgresql-42.7.1.jar lib/slf4j-api-2.0.4.jar
+

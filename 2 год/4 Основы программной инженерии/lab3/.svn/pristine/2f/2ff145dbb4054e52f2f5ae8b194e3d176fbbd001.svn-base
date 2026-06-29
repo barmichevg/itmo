@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="web.models.HitBeanTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-04-26T15:36:25.579Z" hostname="DESKTOP-6ONJ5I3" time="0.028">
+  <properties/>
+  <testcase name="pointOutsideThirdQuadrantTriangleShouldMiss" classname="web.models.HitBeanTest" time="0.01"/>
+  <testcase name="pointInFourthQuadrantShouldMiss" classname="web.models.HitBeanTest" time="0.002"/>
+  <testcase name="pointOutsideSecondQuadrantRectangleShouldMiss" classname="web.models.HitBeanTest" time="0.001"/>
+  <testcase name="pointOnThirdQuadrantTriangleBorderShouldHit" classname="web.models.HitBeanTest" time="0.001"/>
+  <testcase name="pointOutsideFirstQuadrantCircleShouldMiss" classname="web.models.HitBeanTest" time="0.001"/>
+  <testcase name="pointInsideThirdQuadrantTriangleShouldHit" classname="web.models.HitBeanTest" time="0.001"/>
+  <testcase name="pointInsideFirstQuadrantCircleShouldHit" classname="web.models.HitBeanTest" time="0.0"/>
+  <testcase name="pointOnSecondQuadrantRectangleBorderShouldHit" classname="web.models.HitBeanTest" time="0.0"/>
+  <testcase name="pointInsideSecondQuadrantRectangleShouldHit" classname="web.models.HitBeanTest" time="0.001"/>
+  <testcase name="pointOnCircleBorderShouldHit" classname="web.models.HitBeanTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

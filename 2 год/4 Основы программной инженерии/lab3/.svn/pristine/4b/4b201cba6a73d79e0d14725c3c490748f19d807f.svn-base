@@ -1,0 +1,25 @@
+package web;
+
+import web.models.HitBean;
+
+import java.math.BigDecimal;
+
+public class Main {
+    public static void main(String[] args) {
+        if (args.length != 3) {
+            System.out.println("Usage: java -jar lab3.jar <x> <y> <r>");
+            return;
+        }
+
+        BigDecimal x = new BigDecimal(args[0]);
+        BigDecimal y = new BigDecimal(args[1]);
+        BigDecimal r = new BigDecimal(args[2]);
+
+        boolean result = HitBean.inArea(x, y, r);
+
+        System.out.println("x = " + x);
+        System.out.println("y = " + y);
+        System.out.println("r = " + r);
+        System.out.println("hit = " + result);
+    }
+}

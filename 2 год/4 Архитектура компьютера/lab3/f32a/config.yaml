@@ -1,0 +1,25 @@
+name: assert sum_of_digits(-456) == 15
+limit: 5000
+memory_size: 0x1000
+memory_mapped_io:
+  0x80: [-456]
+  0x84: []
+
+reports:
+  - name: Step-by-step
+    slice: all
+    view: |
+      {pc}:	{instruction} {pc:label} -> A = {A} B = {B} -> {memory:0:40}
+
+  - name: Check results
+    slice: last
+    filter:
+      - state
+    view: |
+      numio[0x80]: {io:0x80:dec}
+      numio[0x84]: {io:0x84:dec}
+      {memory:0:40}
+    assert: |
+      numio[0x80]: [] >>> []
+      numio[0x84]: [] >>> [15]
+      mem[0..40]: 	80 00 00 00 84 00 00 00 00 00 00 00 0f 00 00 00 0a 00 00 00 cc cc cc cc 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
