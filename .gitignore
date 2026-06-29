@@ -1,7 +1,5 @@
 .idea/
-pycache/
 .vs/
-.vscode/
 .gradle/
 .DS_Store
 Thumbs.db
