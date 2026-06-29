@@ -1,0 +1,13 @@
+.idea/
+pycache/
+.vs/
+.vscode/
+.gradle/
+.DS_Store
+Thumbs.db
+Desktop.ini
+~$*
+~WRL*.tmp
+*.swp
+*.swo
+*~
