@@ -1,0 +1,4 @@
+[submodule "2 год/4 Архитектура компьютера/lab4"]
+	path = 2 год/4 Архитектура компьютера/lab4
+	url = https://github.com/barmichevg/csa-lab4.git
+	branch = main
